@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Forecast</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #2b2d77, #b23a6f);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1000px;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(14px);
+            border-radius: 24px;
+            padding: 30px 35px 40px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.35);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 6px;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 28px;
+        }
+
+        form {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            width: 45%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+        }
+
+        button {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, #ff7a18, #ffb347);
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .toggle {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin: 18px 0 28px;
+        }
+
+        .toggle label {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 16px;
+            border-radius: 25px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .current {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .forecast {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 18px;
+        }
+
+        .day-card {
+            background: rgba(255,255,255,0.22);
+            border-radius: 18px;
+            padding: 18px 15px;
+            text-align: center;
+        }
+
+        .temp-up {
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        .temp-down {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .code {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        .error {
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(255,0,0,0.25);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            input[type="text"] {
+                width: 100%;
+            }
+
+            form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>⛅ Weather Forecast</h1>
+    <p class="subtitle">Today & 10-Day detailed weather report</p>
+
+    <form method="POST">
+        <input type="text" name="city" placeholder="Enter city name" required>
+        <button type="submit">Search</button>
+
+        <div class="toggle">
+            <label>
+                <input type="radio" name="forecast_type" value="1"
+                {% if forecast_type == "1" %}checked{% endif %}>
+                Today
+            </label>
+
+            <label>
+                <input type="radio" name="forecast_type" value="10"
+                {% if forecast_type == "10" %}checked{% endif %}>
+                10 Days
+            </label>
+        </div>
+    </form>
+
+    {% if current_weather %}
+    <div class="current">
+        <h2>{{ city|upper }}</h2>
+        <p> 🌡️Temperature: {{ current_weather.temperature }} °C</p>
+        <p> 🍃 Wind Speed: {{ current_weather.windspeed }} km/h</p>
+    </div>
+    {% endif %}
+
+    {% if forecast %}
+    <div class="forecast">
+        {% for date, max_temp, min_temp, code in forecast %}
+        <div class="day-card">
+            <h4>{{ date }}</h4>
+            <div class="temp-up">⬆ {{ max_temp }} °C</div>
+            <div class="temp-down">⬇ {{ min_temp }} °C</div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+</div>
+
+</body>
+</html>
